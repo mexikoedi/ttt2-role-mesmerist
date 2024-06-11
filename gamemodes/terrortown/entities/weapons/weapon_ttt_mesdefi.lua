@@ -152,11 +152,11 @@ if SERVER then
       return
     end
 
-    if ply:Alive() and not (SpecDM and not ply:IsGhost()) then
-			self:Error(DEFI_ERROR_PLAYER_ALIVE)
+    if ply:IsActive() then
+      self:Error(DEFI_ERROR_PLAYER_ALIVE)
 
-			return
-		end
+      return
+    end
 
     local reviveTime = GetConVar("ttt2_mesdefi_revive_time"):GetFloat()
     -- local reviveTime = 3.0
@@ -190,11 +190,11 @@ if SERVER then
         SendFullStateUpdate()
       end,
       function(p)
-        if not IsValid(owner) or not owner:IsPlayer() or not owner:Alive() or owner:IsSpec() then
+        if not IsValid(owner) or not owner:IsPlayer() or not owner:IsActive() then
           self:CancelRevival()
           self:Error(DEFI_ERROR_FAILED)
           return false 
-        elseif not IsValid(p) or (p:Alive() and not (SpecDM and p:IsGhost())) then
+        elseif not IsValid(p) or p:IsActive() then
           self:CancelRevival()
           self:Error(DEFI_ERROR_FAILED)
           return false
@@ -258,7 +258,7 @@ if SERVER then
     elseif not owner:KeyDown(IN_ATTACK) or owner:GetEyeTrace(MASK_SHOT_HULL).Entity ~= self.defiTarget or owner:GetActiveWeapon():GetClass() ~= self:GetClass() then
       self:CancelRevival()
       self:Error(DEFI_ERROR_LOST_TARGET)
-    elseif target:Alive() and not (SpecDM and not target:IsGhost()) then
+    elseif target:IsActive() then
       self:CancelRevival()
       self:Error(DEFI_ERROR_PLAYER_ALIVE)
     end
